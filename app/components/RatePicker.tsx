@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { Container, Form , Input, Button, Table } from 'semantic-ui-react';
 import moment from 'moment';
+
+import styles from './RatePicker.css';
 
 type Props = {
     env:            any,
@@ -10,14 +13,16 @@ type Props = {
 export default function RatePicker(props : Props) {
     const [displayTime, setDisplayTime] = useState('');
     const [rates, setRates] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [humanTime, setHumanTime] = useState('');
 
     const getRates = () => {
         const asDate = moment(displayTime).format('YYYY-MM-DD[T]HH:mm:ss[Z]');
- 
-        console.log({
-            zone_id: props.zone.id,
-            start_time: asDate,
-        })
+        setIsLoading(true);
+
+        // Human-readable datetime; importantly, contains day of week
+        setHumanTime(moment(displayTime).format('dddd, MMMM Do YYYY, h:mm:ss a') + ' UTC');
+        
         return props.env.get_rates({
             zone_id: props.zone.id,
             start_time: asDate,
@@ -27,6 +32,7 @@ export default function RatePicker(props : Props) {
             vehicle_country: 'US',
         }).then((result : any) => {
             setRates(result);
+            setIsLoading(false);
         });
     };
 
@@ -34,24 +40,51 @@ export default function RatePicker(props : Props) {
         setDisplayTime(str);
     }
 
-    return (
-        <div>
-            <h2>Rate picker</h2>
-            <input type="datetime" 
-                value={displayTime} 
-                onChange={ev => updateDisplayTime(ev.target.value)} />
-            
-            <button onClick={() => getRates()}>Get rates</button>
+    const generateRow = (rate : any) => {
+        return (
+            <Table.Row key={rate.increment}>
+                <Table.Cell>{rate.increment}</Table.Cell>
+                <Table.Cell>${rate.total_fees.amount}</Table.Cell>
+            </Table.Row>
+        )
+    }
 
-            <ul>
-                {
-                    rates ? rates.rates.map(rate => {
-                        return (
-                            <li key={rate.increment}>Duration: {rate.increment} minutes; Cost: ${rate.total_fees.amount}</li>
-                        )
-                    }) : null
-                }
-            </ul>
-        </div>
+    const generateTable = () => {
+        return (
+            <Table celled>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Minutes</Table.HeaderCell>
+                        <Table.HeaderCell>Price</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                    { rates.rates.map(r => generateRow(r)) }
+                </Table.Body>
+            </Table>
+        );
+    }
+
+    return (
+        <Container className={styles.container}>
+            <Form>
+                <Form.Field>
+                    <label>Session start time</label>
+
+                    <Input
+                        value={displayTime}
+                        onChange={ev => updateDisplayTime(ev.target.value)} />
+                </Form.Field>
+
+                <Button 
+                    className={{ loading: isLoading, primary: true }}
+                    onClick={() => getRates()}>Get rates</Button>
+
+                <span className={styles.human_time}>{ humanTime }</span>
+            </Form>
+
+            { rates !== null && rates.rates.length > 0 ? generateTable() : null }
+        </Container>
     );
 }

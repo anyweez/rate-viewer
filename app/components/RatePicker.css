@@ -1,0 +1,11 @@
+.container {
+    margin: 5px 0;
+}
+
+.human_time {
+    display: inline-block;
+    margin-left: 10px;
+
+    font-style: italic;
+    color: #8a8a8a;
+}

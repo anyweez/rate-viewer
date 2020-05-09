@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
 import ZonePicker from '../components/ZonePicker';
 import RatePicker from '../components/RatePicker';
 import routes from '../constants/routes.json';
+
+import styles from './ParkingPage.css';
 
 
 export default function ParkingPage(props: any) {
@@ -12,18 +15,15 @@ export default function ParkingPage(props: any) {
 
     const selectZone = (zone: any) => {
         setZone(zone);
-
-        console.log('Selected zone:');
-        console.log(zone);
     }
 
     return (
-        <div>
-            <h2>ParkingPage</h2>
-            <Link to={routes.HOME}>The real home</Link>
+        <Container className={styles.container}>
+            <Link to={routes.HOME}>&lt; Change credentials</Link>
+
             <ZonePicker env={env} onSelect={selectZone} />
 
             { zone !== null ? <RatePicker env={env} zone={zone} /> : null}
-        </div>
+        </Container>
     );
 };
