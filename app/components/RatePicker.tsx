@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Form , Input, Button, Table } from 'semantic-ui-react';
+import { Container, Form , Input, Button, Table, Message } from 'semantic-ui-react';
 import moment from 'moment';
 
 import styles from './RatePicker.css';
@@ -31,8 +31,13 @@ export default function RatePicker(props : Props) {
             vehicle_state: 'WA',
             vehicle_country: 'US',
         }).then((result : any) => {
-            setRates(result);
+            setRates(result.rates);
             setIsLoading(false);
+        }).catch((error: any) => {
+            setIsLoading(false);
+            setRates([]);
+
+            console.log('got error');
         });
     };
 
@@ -60,10 +65,19 @@ export default function RatePicker(props : Props) {
                 </Table.Header>
 
                 <Table.Body>
-                    { rates.rates.map(r => generateRow(r)) }
+                    { rates.map(r => generateRow(r)) }
                 </Table.Body>
             </Table>
         );
+    }
+
+    const showMessage = () => {
+        return (
+            <Message>
+                <Message.Header>No rates available</Message.Header>
+                <p>You cannot pay for parking at this time.</p>
+            </Message>
+        )
     }
 
     return (
@@ -84,7 +98,8 @@ export default function RatePicker(props : Props) {
                 <span className={styles.human_time}>{ humanTime }</span>
             </Form>
 
-            { rates !== null && rates.rates.length > 0 ? generateTable() : null }
+            { rates !== null && rates.length > 0 ? generateTable() : null }
+            { rates !== null && rates.length === 0 ? showMessage() : null }
         </Container>
     );
 }

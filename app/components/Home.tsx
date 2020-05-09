@@ -27,22 +27,22 @@ export default function Home() {
       client_id: client.id,
       client_secret: client.secret,
     }).then((env : any) => {
-      console.log('got response');
-      console.log(env);
-
       setEnv(env);
       setIsLoading(false);
     });
   };
 
+  /* Update client ID as the user types. */
   const updateClientId = (next : string) => {
     setClient({ id: next, secret: client.secret });
   }
 
+  /* Update client secret as the user types. */
   const updateClientSecret = (next : string) => {
     setClient({ id: client.id, secret: next });
   }
 
+  /* If we've got an authenticated environment, redirect to the parking page. */
   if (env !== null && env.is_authenticated()) {
     return <Redirect to={{
       pathname: routes.PARKING,
@@ -50,6 +50,7 @@ export default function Home() {
     }} />;
   }
  
+  /* If we don't have an authenticated environment, allow the users to provide inputs. */
   return (
     <Container className={styles.container}>
       <img className={styles.header_logo} src={PassportLogo} />

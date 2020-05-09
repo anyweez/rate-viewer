@@ -82,7 +82,7 @@ export default function ZonePicker(props : Props) {
 
                     <Input
                         value={zoneNumber}
-                        className={{ disabled: isDisabled }}
+                        className={[ isDisabled ? 'disabled' : ''].join(' ') }
                         onChange={ev => update_zone_number(ev.target.value)} />
                 </Form.Field>
 
