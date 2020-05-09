@@ -6,22 +6,26 @@ import styles from './Home.css';
 const passport = require('node-passport-parking');
 
 export default function Home() {
-  const [accessToken, setAccessToken] = useState('');
   const [client, setClient] = useState({ 
     id: process.env.CLIENT_ID ? process.env.CLIENT_ID : '', 
     secret: process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : '', 
   });
 
-  const checkAuth = () => {
+  const [env, setEnv] = useState(null);
 
+  /**
+   * Fetch the access token using the provided client ID and secret.
+   */
+  const checkAuth = () => {
     return passport('production').authenticate({
       client_id: client.id,
       client_secret: client.secret,
     }).then((env : any) => {
+      console.log('got response');
       console.log(env);
+
+      setEnv(env);
     });
-    // TODO: get access token using credentials
-    setAccessToken('abc123');
   };
 
   const updateClientId = (next : string) => {
@@ -32,8 +36,14 @@ export default function Home() {
     setClient({ id: client.id, secret: next });
   }
 
-  if (accessToken.length > 0) {
-    return <Redirect to={routes.PARKING} />;
+  console.log('stored env:')
+  console.log(env);
+
+  if (env !== null && env.is_authenticated()) {
+    return <Redirect to={{
+      pathname: routes.PARKING,
+      state: { env },
+    }} />;
   }
 
   return (
