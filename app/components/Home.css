@@ -1,8 +1,5 @@
 .container {
-  position: absolute;
-  top: 30%;
-  left: 10px;
-  text-align: center;
+  margin-top: 10%;
 }
 
 .container h2 {
@@ -11,4 +8,16 @@
 
 .container a {
   font-size: 1.4rem;
+}
+
+input[type="text"] {
+  margin: 3px 0 !important;
+}
+
+button.ui.button {
+  display: block; 
+}
+
+.header_logo {
+  width: 300px;
 }

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { Input, Button, Header, Container, Form } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom';
 import routes from '../constants/routes.json'; 
 import styles from './Home.css';
+
+import PassportLogo from '../images/Passport-Lockup-1.png';
 
 const passport = require('node-passport-parking');
 
@@ -12,11 +15,14 @@ export default function Home() {
   });
 
   const [env, setEnv] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
    * Fetch the access token using the provided client ID and secret.
    */
   const checkAuth = () => {
+    setIsLoading(true);
+
     return passport('production').authenticate({
       client_id: client.id,
       client_secret: client.secret,
@@ -25,6 +31,7 @@ export default function Home() {
       console.log(env);
 
       setEnv(env);
+      setIsLoading(false);
     });
   };
 
@@ -36,32 +43,43 @@ export default function Home() {
     setClient({ id: client.id, secret: next });
   }
 
-  console.log('stored env:')
-  console.log(env);
-
   if (env !== null && env.is_authenticated()) {
     return <Redirect to={{
       pathname: routes.PARKING,
       state: { env },
     }} />;
   }
-
+ 
   return (
-    <div className={styles.container} data-tid="container">
-      <h2>Passport</h2>
-      <h3>Rate tester</h3>
+    <Container className={styles.container}>
+      <img className={styles.header_logo} src={PassportLogo} />
+      <Header as="h2">Zone &amp; rate tester</Header>
 
-      <input type="text" 
-        value={client.id} 
-        placeholder="Client ID" 
-        onChange={ev => updateClientId(ev.target.value)}></input>
+      <Form>
+        <Form.Field
+          value={client.id}
+          onChange={ev => updateClientId(ev.target.value)}>
+        
+          <label>Client ID</label>
+          <Input
+            value={client.id}
+            onChange={ev => updateClientId(ev.target.value)} />
+        </Form.Field>
 
-      <input type="text" 
-        value={client.secret} 
-        placeholder="Client secret"
-        onChange={ev => updateClientSecret(ev.target.value)}></input>
+        <Form.Field
+          value={client.secret}
+          onChange={ev => updateClientId(ev.target.value)}>
+        
+          <label>Client secret</label>
+          <Input
+          value={client.secret} 
+          onChange={ev => updateClientSecret(ev.target.value)} />
+        </Form.Field>
 
-      <button type="button" onClick={checkAuth}>Authenticate</button>
-    </div>
+        <Button
+          className={{ loading: isLoading, primary: true }}
+          onClick={checkAuth}>Authenticate</Button>
+      </Form>
+    </Container>
   );
 }
