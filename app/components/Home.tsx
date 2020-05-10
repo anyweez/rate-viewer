@@ -65,10 +65,7 @@ export default function Home() {
       <Header as="h2">Zone &amp; rate tester</Header>
 
       <Form>
-        <Form.Field
-          value={client.id}
-          onChange={ev => updateClientId(ev.target.value)}
-        >
+        <Form.Field>
           <label>Client ID</label>
           <Input
             value={client.id}
@@ -76,10 +73,7 @@ export default function Home() {
           />
         </Form.Field>
 
-        <Form.Field
-          value={client.secret}
-          onChange={ev => updateClientId(ev.target.value)}
-        >
+        <Form.Field>
           <label>Client secret</label>
           <Input
             value={client.secret}
