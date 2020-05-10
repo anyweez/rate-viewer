@@ -88,7 +88,7 @@ export default function Home() {
         </Form.Field>
 
         <Button
-          className={{ loading: isLoading, primary: true }}
+          className={['primary', isLoading ? 'loading' : ''].join(' ')}
           onClick={checkAuth}
         >
           Authenticate

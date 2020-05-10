@@ -99,7 +99,6 @@ export default function RatePicker(props: Props) {
             value={displayTime}
             onChange={ev => updateDisplayTime(ev.target.value)}
           />
-          />
         </Form.Field>
 
         <Button
