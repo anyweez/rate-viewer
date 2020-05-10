@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Button, Header, Container, Form } from 'semantic-ui-react';
+import { Input, Button, Header, Container, Form, Message } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import styles from './Home.css';
@@ -16,6 +16,7 @@ export default function Home() {
 
   const [env, setEnv] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorDisplay, setErrorDisplay] = useState('');
 
   /**
    * Fetch the access token using the provided client ID and secret.
@@ -33,6 +34,15 @@ export default function Home() {
         setIsLoading(false);
 
         return newEnv;
+      })
+      .catch(err => {
+        setIsLoading(false);
+
+        if (err.hasOwnProperty('title')) {
+          setErrorDisplay(err.title)
+        } else {
+          setErrorDisplay('Unknown error');
+        }
       });
   };
 
@@ -45,6 +55,15 @@ export default function Home() {
   const updateClientSecret = (next: string) => {
     setClient({ id: client.id, secret: next });
   };
+
+  const showError = () => {
+    return (
+      <Message negative>
+        <Message.Header>Invalid credentials</Message.Header>
+        <p>{errorDisplay}</p>
+      </Message>
+    );
+  }
 
   /* If we've got an authenticated environment, redirect to the parking page. */
   if (env !== null && env.is_authenticated()) {
@@ -63,6 +82,8 @@ export default function Home() {
     <Container className={styles.container}>
       <img className={styles.header_logo} src={PassportLogo} alt="Passport logo" />
       <Header as="h2">Zone &amp; rate tester</Header>
+
+      { errorDisplay.length ? showError() : '' }
 
       <Form>
         <Form.Field>
