@@ -1,7 +1,7 @@
 {
   "name": "rate-viewer",
   "productName": "Passport Rate Viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Application for testing Passport's parking APIs (https://developer.passportinc.com)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -97,8 +97,7 @@
     "publish": {
       "provider": "github",
       "owner": "anyweez",
-      "repo": "rate-viewer",
-      "private": true
+      "repo": "rate-viewer"
     }
   },
   "repository": {
