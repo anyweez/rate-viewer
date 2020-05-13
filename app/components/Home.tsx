@@ -6,7 +6,7 @@ import styles from './Home.css';
 
 import PassportLogo from '../images/Passport-Lockup-1.png';
 
-const passport = require('node-passport-parking');
+const passport = require('passport-parking');
 
 export default function Home() {
   const [client, setClient] = useState({
@@ -81,7 +81,7 @@ export default function Home() {
   return (
     <Container className={styles.container}>
       <img className={styles.header_logo} src={PassportLogo} alt="Passport logo" />
-      <Header as="h2">Zone &amp; rate tester</Header>
+      <Header as="h2">Rate viewer</Header>
 
       { errorDisplay.length ? showError() : '' }
 
@@ -98,6 +98,7 @@ export default function Home() {
           <label>Client secret</label>
           <Input
             value={client.secret}
+            type="password"
             onChange={ev => updateClientSecret(ev.target.value)}
           />
         </Form.Field>
