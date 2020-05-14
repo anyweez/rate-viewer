@@ -1,7 +1,7 @@
 {
   "name": "rate-viewer",
   "productName": "Passport Rate Viewer",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Application for testing Passport's parking APIs (https://developer.passportinc.com)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",

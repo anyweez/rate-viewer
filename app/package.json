@@ -1,7 +1,7 @@
 {
   "name": "rate-viewer",
   "productName": "Passport Rate Tester",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Allows users to test active rate configurations.",
   "main": "./main.prod.js",
   "author": {
