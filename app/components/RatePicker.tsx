@@ -5,9 +5,12 @@ import {
   Input,
   Button,
   Table,
-  Message
+  Message,
+  Radio
 } from 'semantic-ui-react';
 import moment from 'moment';
+import timespace from '@mapbox/timespace';
+// const timespace = require('@mapbox/timespace');
 
 import styles from './RatePicker.css';
 
@@ -22,20 +25,28 @@ export default function RatePicker(props: Props) {
   const [rates, setRates] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [humanTime, setHumanTime] = useState('');
+  const [timeZoneName, setTimeZoneName] = useState('local');
 
   const getRates = () => {
-    const asDate = moment(displayTime).format('YYYY-MM-DD[T]HH:mm:ss[Z]');
+    const loc_tz = timespace.getFuzzyLocalTimeFromPoint(displayTime, props.zone.geography.geometries[0].coordinates);
+
+    const targetTimestamp = timeZoneName === 'local' ?
+      moment.tz(displayTime, loc_tz.tz()).utc():
+      moment(displayTime);
+
     setIsLoading(true);
+
+    console.log(targetTimestamp)
 
     // Human-readable datetime; importantly, contains day of week
     setHumanTime(
-      `${moment(displayTime).format('dddd, MMMM Do YYYY, h:mm:ss a')} UTC`
+      `${targetTimestamp.format('dddd, MMMM Do YYYY, h:mm:ss a')} UTC`
     );
 
     return props.env
       .get_rates({
         zone_id: props.zone.id,
-        start_time: asDate,
+        start_time: targetTimestamp.format('YYYY-MM-DD[T]HH:mm:ss[Z]') ,
 
         vehicle_plate: 'ABC123',
         vehicle_state: 'WA',
@@ -49,7 +60,7 @@ export default function RatePicker(props: Props) {
         setIsLoading(false);
         setRates([]);
 
-        console.log('got error');
+        console.log(`got error: ${error}`);
       });
   };
 
@@ -101,8 +112,26 @@ export default function RatePicker(props: Props) {
           />
         </Form.Field>
 
+        <Form.Field>
+          <Radio
+            label='Local time'
+            name='timezone'
+            value='local'
+            checked={timeZoneName === 'local'}
+            onChange={(e, { value }) => setTimeZoneName(value)} />
+        </Form.Field>
+        
+        <Form.Field>
+          <Radio
+            label='UTC'
+            name='timezone'
+            value='utc'
+            checked={timeZoneName === 'utc'}
+            onChange={(e, { value }) => setTimeZoneName(value)} />
+        </Form.Field>
+
         <Button
-          className={{ loading: isLoading, primary: true }}
+          className={ [isLoading ? 'loading' : '', 'primary'].join(' ') }
           onClick={() => getRates()}
         >
           Get rates

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Button, Header, Container, Form, Message } from 'semantic-ui-react';
+import { Input, Button, Header, Container, Form, Message, Radio } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import styles from './Home.css';
@@ -14,6 +14,7 @@ export default function Home() {
     secret: process.env.CLIENT_SECRET ? process.env.CLIENT_SECRET : ''
   });
 
+  const [envName, setEnvName] = useState('production');
   const [env, setEnv] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorDisplay, setErrorDisplay] = useState('');
@@ -24,7 +25,7 @@ export default function Home() {
   const checkAuth = () => {
     setIsLoading(true);
 
-    return passport('production')
+    return passport(envName)
       .authenticate({
         client_id: client.id,
         client_secret: client.secret
@@ -101,6 +102,24 @@ export default function Home() {
             type="password"
             onChange={ev => updateClientSecret(ev.target.value)}
           />
+        </Form.Field>
+
+        <Form.Field>
+          <Radio
+            label='Sandbox'
+            name='environment'
+            value='staging'
+            checked={envName === 'staging'}
+            onChange={(e, { value }) => setEnvName(value)} />
+        </Form.Field>
+
+        <Form.Field>
+          <Radio
+            label='Production'
+            name='environment'
+            value='production'
+            checked={envName === 'production'}
+            onChange={(e, { value }) => setEnvName(value)} />
         </Form.Field>
 
         <Button

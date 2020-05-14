@@ -58,9 +58,8 @@ export default function ZonePicker(props: Props) {
       <Table.Row key={zone.id}>
         <Table.Cell>
           <Button
-            className={{ secondary: true }}
-            onClick={() => zoneSelect(zone)}
-          >
+            className={ ['secondary'].join(' ') }
+            onClick={() => zoneSelect(zone)}>
             Select
           </Button>
         </Table.Cell>
