@@ -36,8 +36,6 @@ export default function RatePicker(props: Props) {
 
     setIsLoading(true);
 
-    console.log(targetTimestamp)
-
     // Human-readable datetime; importantly, contains day of week
     setHumanTime(
       `${targetTimestamp.format('dddd, MMMM Do YYYY, h:mm:ss a')} UTC`
