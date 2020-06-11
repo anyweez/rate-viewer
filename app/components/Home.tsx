@@ -106,7 +106,7 @@ export default function Home() {
 
         <Form.Field>
           <Radio
-            label='Sandbox'
+            label='Sandbox' 
             name='environment'
             value='staging'
             checked={envName === 'staging'}

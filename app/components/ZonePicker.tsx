@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container, Form, Input, Button, Table } from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react';
+import { Container, Form, Input, Button, Table, Message } from 'semantic-ui-react';
 
 import styles from './ZonePicker.css';
 
@@ -14,14 +14,9 @@ export default function ZonePicker(props: Props) {
   const [zoneNumber, setZoneNumber] = useState(''); // Value of <input> box
 
   const [zones, setZones] = useState([]); // Search results
-  // const [searched, setSearched] = useState('');       // Zone number of most recently searched zone
+  const [searchComplete, setSearchComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
-  // const [requestLatency, setRequestLatency] = useState(0);
-
-  // const update_zone_number = (field: string) => {
-  //   setZoneNumber(field);
-  // };
 
   const getZones = () => {
     setIsLoading(true);
@@ -40,6 +35,7 @@ export default function ZonePicker(props: Props) {
       .then((zones: []) => {
         // setRequestLatency(new Date().getTime() - start_time.getTime());
         setZones(zones);
+        setSearchComplete(true);
 
         // setSearched(zn);
         setIsLoading(false);
@@ -50,6 +46,7 @@ export default function ZonePicker(props: Props) {
     const zoneSelect = (zone: any) => {
       setZones([]);
       setDisabled(true);
+      setZoneNumber(zone.number);
 
       props.onSelect(zone);
     };
@@ -120,6 +117,14 @@ export default function ZonePicker(props: Props) {
           </Form.Field>
         </div>
 
+        { zones.length === 0 && searchComplete && !isDisabled ? 
+            <Message
+              icon='globe'
+              header='No zones found.'
+              content='There are no accessible zones matching the parameters you provided.'
+            /> : ''
+        }
+        
         <Button
           className={['primary', isLoading ? 'loading' : '', isDisabled ? styles.hidden : ''].join(' ')}
           onClick={() => getZones()}

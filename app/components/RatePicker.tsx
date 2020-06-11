@@ -10,18 +10,17 @@ import {
 } from 'semantic-ui-react';
 import moment from 'moment';
 import timespace from '@mapbox/timespace';
-// const timespace = require('@mapbox/timespace');
 
 import styles from './RatePicker.css';
 
 type Props = {
   env: any;
   zone: any;
-  // onSelect:       (zone : any) => void,
+  onResetZone: () => void
 };
 
 export default function RatePicker(props: Props) {
-  const [displayTime, setDisplayTime] = useState('');
+  const [displayTime, setDisplayTime] = useState('2020-01-06 16:15:00');
   const [rates, setRates] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [humanTime, setHumanTime] = useState('');
@@ -65,6 +64,10 @@ export default function RatePicker(props: Props) {
   const updateDisplayTime = (str: string) => {
     setDisplayTime(str);
   };
+
+  const changeZone = () => {
+    props.onResetZone();
+  }
 
   const generateRow = (rate: any) => {
     return (
@@ -133,6 +136,10 @@ export default function RatePicker(props: Props) {
           onClick={() => getRates()}
         >
           Get rates
+        </Button>
+
+        <Button secondary onClick={() => changeZone()}>
+          Change zone
         </Button>
 
         <span className={styles.human_time}>{humanTime}</span>
